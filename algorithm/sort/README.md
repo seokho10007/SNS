@@ -3,27 +3,88 @@
 ### 선택정렬
 
 -   가장 작은 것을 선택해서 앞으로 보냄
+-   요소들이 들어갈 위치는 이미 정해져 있음
 -   N \* (N + 1) / 2 번의 연산을 실행함
--   컴퓨터에서는 가장 큰 차수인 N^2만 보고 O(N^2)라고 표현
+-   따라서 O(N^2)의 시간복잡도를 지님
+-   평균적으로 다른 정렬 알고리즘에 비해 성능이 떨어지지만 메모리 사용이 극도로 제한되어 있는 환경에서는 추가적인 메모리가 필요한 다른 정렬 알고리즘에 비해서 효율적인 알고리즘이다.
+
+ex)
+
+```js
+const selectionSort = (arr) => {
+	for (let i = 0; i < arr.length; i++) {
+		let minIndex = i;
+		for (let j = 0; j < arr.length; j++) {
+			if (arr[minIndex] > arr[j]) {
+				minIndex = j;
+			}
+		}
+		if (minIndex !== i) {
+			// 구조 분해 할당을 통해 swap
+			[arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+		}
+	}
+	return arr;
+};
+```
+
+<br/>
 
 ### 버블정렬
 
--   옆에 있는 값과 비교해서 더 작은 값을 앞으로 보냄
--   한번 반복했을때 가장 큰 값이 제일 뒤로 감
+-   인접한 두 요소를 마지막 요소까지 모두 비교하여 교환하거나 유지하면서 정렬하는 방법
+-   단순하게 인접한 두 요소를 비교하기 때문에 구현이 굉장히 단순하다.
 -   선택정렬과 같이 N^2의 시간복잡도를 가지만 효율성이 가장 떨어짐
--   버블정렬이 효율성이 가장 떨어지는 이유는
--   선택정렬은 연산의 마지막에 요소를 교체, 버블정렬은 매 연산마다 뒤에 값과 값을 비교해 요소를 교체
--   컴퓨터의 실행시간이 훨씬 더 오래걸림
+-   버블정렬이 효율성이 가장 떨어지는 이유는 선택정렬은 연산의 마지막에 요소를 교체, 버블정렬은 매 연산마다 뒤에 값과 값을 비교해 요소를 교체 컴퓨터의 실행시간이 훨씬 더 오래걸림
+-   Best Case: O(N): 이미 정렬이 되어있는 경우
+-   Worst Case: O(N^2): 정렬이 하나도 안되어있는 경우
+
+ex)
+
+```js
+const bubbleSort = (arr) => {
+	for (let i = 0; i < arr.length; i++) {
+		for (let j = 0; j < arr.length; j++) {
+			if (arr[j] > arr[j + 1]) {
+				[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+			}
+		}
+	}
+	return arr;
+};
+```
+
+<br/>
 
 ### 삽입정렬
 
--   각 숫자를 적절한 위치에 삽입하는 방법
--   다른 정렬 방신들은 무조건 위치를 바꾸지만 삽입정렬은 필요한때만 위치를 바꿈
+-   왼쪽에서 오른쪽으로 이동하면서 각 요소들을 왼쪽 요소들과 비교하여 알잡은 자리에 삽입하는 방법
+-   다른 정렬 방식들은 무조건 위치를 바꾸지만 삽입정렬은 필요한때만 위치를 바꿈
 -   N^2 의 시간복잡도를 가지지만
 -   연산이 적게 이루어져 선택정렬과 버블정렬보다 더 빠른 실행시간을 가짐
 -   왼쪽에 있는 요소들은 정렬이 되어있다 가정함
 -   특정한 상황에선 빠른 실행속도를 보임
 -   거의 정렬된 상태라면 굉장히 빠르고 자원을 적게 소모함
+-   Best Case: O(N): 이미 정렬이 되어있는 경우
+-   Worst Case: O(N^2): 정렬이 하나도 안되어있는 경우
+
+ex)
+
+```js
+const insertSort = (arr) => {
+	for (let i = 0; i < 10; i++) {
+		let left = i;
+
+		while (arr[left] > arr[left + 1]) {
+			[arr[left], arr[left + 1]] = [arr[left + 1], arr[left]];
+			left--;
+		}
+	}
+	return arr;
+};
+```
+
+<br/>
 
 ### 퀵정렬
 
@@ -36,6 +97,30 @@
 -   피벗 값과 교체후 다시 연산 실행
 -   퀵정렬은 평균적으로 빠른 알고리즘이지만 배열이 이미 정렬되어 있을경우
 -   N^2의 시간 복잡도를 지니게됨
+-   Best Case: O(N \* logN): 정렬이 하나도 안되어있는 경우
+-   Worst Case: O(N^2): 이미 정렬되어 있는 경우
+
+ex)
+
+```js
+const quickSort = (arr) => {
+	if (arr.length < 2) return arr;
+
+	const pivot = [arr[0]];
+	const left = [];
+	const right = [];
+
+	for (let i = 1; i < arr.length; i++) {
+		if (arr[i] < pivot) left.push(arr[i]);
+		else if (arr[i] > pivot) right.push(arr[i]);
+		else pivot.push(arr[i]);
+	}
+
+	return quickSort(left).concat(pivot, quickSort(right));
+};
+```
+
+<br/>
 
 ### 병합정렬
 
@@ -50,3 +135,25 @@ ex)
  67 58 35 19 // 2개씩 정렬  
  5678 1359 // 정렬  
  13556789 // 정렬
+
+```js
+const mergeSort = (array) => {
+	if (array.length < 2) return array;
+
+	const pivot = Math.floor(array.length / 2);
+	const left = array.slice(0, pivot);
+	const right = array.slice(pivot, array.length);
+
+	return merge(mergeSort(left), mergeSort(right));
+};
+const merge = (left, right) => {
+	const result = [];
+	while (left.length && right.length) {
+		if (left[0] <= right[0]) result.push(left.shift());
+		else result.push(right.shift());
+	}
+	while (left.length) result.push(left.shift());
+	while (right.length) result.push(right.shift());
+	return result;
+};
+```
