@@ -129,6 +129,8 @@ const quickSort = (arr) => {
 -   병합 정렬은 정확히 반절씩 나눈다는 점에서 최악의 경우에도 N \* logN의 시간복잡도를 보장
 -   일단 반으로 나누고 나중에 합쳐서 정렬
 -   이미 정렬이 되어있는 상태에서 새롭게 정렬된 상태를 만드는 것
+-   Best Case: O(N \* logN): 정렬이 하나도 안되어있는 경우
+-   Worst Case: O(N^2): 이미 정렬되어 있는 경우
 
 ex)  
  7 6 5 8 3 5 9 1 // 하나씩 분리  
@@ -155,5 +157,48 @@ const merge = (left, right) => {
 	while (left.length) result.push(left.shift());
 	while (right.length) result.push(right.shift());
 	return result;
+};
+```
+
+### 힙정렬
+
+-   비교 기반 정렬 알고리즘
+-   선택정령을 개선한 것으로 생각할 수 있다.
+-   정렬된 영역과 정렬되지 않은 영역을 나누고 가장 큰 요소를 추출하여 정렬된 영역으로 이동시킨다.
+-   선택 정렬보다 개선된 점은 선형 시간이 소요되는 선택정렬의 탐색과 달리 힙 데이터 구조를 사용하여 최대값을 찾는 점이다.
+-   속도가 빠르고 최악의 경우에도 O(N \* logN)의 시간복잡도를 보장하며 추가적인 메모리를 필요로 하지 않는다.
+-   단, 안정성을 보장받지 못하ㅇ며 데이터의 상태에 때라 다은 정렬법보다 느릴 수 있다.
+-   Best Case: O(N \* logN)
+-   Worst Case: O(N \* logN)
+
+ex)
+
+```js
+const swap = (input, i, j) => ([input[j], input[i]] = [input[i], input[j]]);
+
+const heapRoot = (input, i, arrLen) => {
+	let left = 2 * i + 1;
+	let right = 2 * i + 2;
+	let max = i;
+
+	if (left < arrLen && input[left] > input[max]) max = left;
+	if (right < arrLen && input[right] > input[max]) max = right;
+
+	if (max != i) {
+		swap(input, i, max);
+		heapRoot(input, max, arrLen);
+	}
+};
+
+const heapSort = (input) => {
+	let arrLen = input.length;
+
+	for (let i = Math.floor(arrLen / 2); i >= 0; i--) heapRoot(input, i, arrLen);
+
+	for (let i = input.length - 1; i > 0; i--) {
+		swap(input, 0, i);
+		arrLen--;
+		heapRoot(input, 0, arrLen);
+	}
 };
 ```
