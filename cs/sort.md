@@ -1,0 +1,204 @@
+# 정렬
+
+### 선택정렬
+
+-   가장 작은 것을 선택해서 앞으로 보냄
+-   요소들이 들어갈 위치는 이미 정해져 있음
+-   N \* (N + 1) / 2 번의 연산을 실행함
+-   따라서 O(N^2)의 시간복잡도를 지님
+-   평균적으로 다른 정렬 알고리즘에 비해 성능이 떨어지지만 메모리 사용이 극도로 제한되어 있는 환경에서는 추가적인 메모리가 필요한 다른 정렬 알고리즘에 비해서 효율적인 알고리즘이다.
+
+ex)
+
+```js
+const selectionSort = (arr) => {
+	for (let i = 0; i < arr.length; i++) {
+		let minIndex = i;
+		for (let j = 0; j < arr.length; j++) {
+			if (arr[minIndex] > arr[j]) {
+				minIndex = j;
+			}
+		}
+		if (minIndex !== i) {
+			// 구조 분해 할당을 통해 swap
+			[arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+		}
+	}
+	return arr;
+};
+```
+
+<br/>
+
+### 버블정렬
+
+-   인접한 두 요소를 마지막 요소까지 모두 비교하여 교환하거나 유지하면서 정렬하는 방법
+-   단순하게 인접한 두 요소를 비교하기 때문에 구현이 굉장히 단순하다.
+-   선택정렬과 같이 N^2의 시간복잡도를 가지만 효율성이 가장 떨어짐
+-   버블정렬이 효율성이 가장 떨어지는 이유는 선택정렬은 연산의 마지막에 요소를 교체, 버블정렬은 매 연산마다 뒤에 값과 값을 비교해 요소를 교체 컴퓨터의 실행시간이 훨씬 더 오래걸림
+-   Best Case: O(N): 이미 정렬이 되어있는 경우
+-   Worst Case: O(N^2): 정렬이 하나도 안되어있는 경우
+
+ex)
+
+```js
+const bubbleSort = (arr) => {
+	for (let i = 0; i < arr.length; i++) {
+		for (let j = 0; j < arr.length; j++) {
+			if (arr[j] > arr[j + 1]) {
+				[arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+			}
+		}
+	}
+	return arr;
+};
+```
+
+<br/>
+
+### 삽입정렬
+
+-   왼쪽에서 오른쪽으로 이동하면서 각 요소들을 왼쪽 요소들과 비교하여 알잡은 자리에 삽입하는 방법
+-   다른 정렬 방식들은 무조건 위치를 바꾸지만 삽입정렬은 필요한때만 위치를 바꿈
+-   N^2 의 시간복잡도를 가지지만
+-   연산이 적게 이루어져 선택정렬과 버블정렬보다 더 빠른 실행시간을 가짐
+-   왼쪽에 있는 요소들은 정렬이 되어있다 가정함
+-   특정한 상황에선 빠른 실행속도를 보임
+-   거의 정렬된 상태라면 굉장히 빠르고 자원을 적게 소모함
+-   Best Case: O(N): 이미 정렬이 되어있는 경우
+-   Worst Case: O(N^2): 정렬이 하나도 안되어있는 경우
+
+ex)
+
+```js
+const insertSort = (arr) => {
+	for (let i = 0; i < 10; i++) {
+		let left = i;
+
+		while (arr[left] > arr[left + 1]) {
+			[arr[left], arr[left + 1]] = [arr[left + 1], arr[left]];
+			left--;
+		}
+	}
+	return arr;
+};
+```
+
+<br/>
+
+### 퀵정렬
+
+-   N \* logN 의 실행 속도를 평균으로 가지는 정렬 알고리즘
+-   분할 정복 알고리즘을 사용
+-   특정한 값을 기준으로 큰 숫자와 작은 숫자를 서로 교환한 뒤에 배열을 반으로 나눔
+-   퀵정렬에는 기준 값이 존재 (피벗)
+-   보통 첫번째 원소를 피벗 값으로 설정
+-   배열 왼쪽부터 피벗 값보다 큰 값을, 오른쪽부터 피벗 값보다 작은 값을 찾아 교체
+-   피벗 값과 교체후 다시 연산 실행
+-   퀵정렬은 평균적으로 빠른 알고리즘이지만 배열이 이미 정렬되어 있을경우
+-   N^2의 시간 복잡도를 지니게됨
+-   Best Case: O(N \* logN): 정렬이 하나도 안되어있는 경우
+-   Worst Case: O(N^2): 이미 정렬되어 있는 경우
+
+ex)
+
+```js
+const quickSort = (arr) => {
+	if (arr.length < 2) return arr;
+
+	const pivot = [arr[0]];
+	const left = [];
+	const right = [];
+
+	for (let i = 1; i < arr.length; i++) {
+		if (arr[i] < pivot) left.push(arr[i]);
+		else if (arr[i] > pivot) right.push(arr[i]);
+		else pivot.push(arr[i]);
+	}
+
+	return quickSort(left).concat(pivot, quickSort(right));
+};
+```
+
+<br/>
+
+### 병합정렬
+
+-   분할 정복 방법을 채택한 알고리즘
+-   같은 방법을 채택한 퀵정렬은 최악의 경우 N^2의 시간복잡도를 가진다.
+-   병합 정렬은 정확히 반절씩 나눈다는 점에서 최악의 경우에도 N \* logN의 시간복잡도를 보장
+-   일단 반으로 나누고 나중에 합쳐서 정렬
+-   이미 정렬이 되어있는 상태에서 새롭게 정렬된 상태를 만드는 것
+-   Best Case: O(N \* logN): 정렬이 하나도 안되어있는 경우
+-   Worst Case: O(N^2): 이미 정렬되어 있는 경우
+
+ex)  
+ 7 6 5 8 3 5 9 1 // 하나씩 분리  
+ 67 58 35 19 // 2개씩 정렬  
+ 5678 1359 // 정렬  
+ 13556789 // 정렬
+
+```js
+const mergeSort = (array) => {
+	if (array.length < 2) return array;
+
+	const pivot = Math.floor(array.length / 2);
+	const left = array.slice(0, pivot);
+	const right = array.slice(pivot, array.length);
+
+	return merge(mergeSort(left), mergeSort(right));
+};
+const merge = (left, right) => {
+	const result = [];
+	while (left.length && right.length) {
+		if (left[0] <= right[0]) result.push(left.shift());
+		else result.push(right.shift());
+	}
+	while (left.length) result.push(left.shift());
+	while (right.length) result.push(right.shift());
+	return result;
+};
+```
+
+### 힙정렬
+
+-   비교 기반 정렬 알고리즘
+-   선택정령을 개선한 것으로 생각할 수 있다.
+-   정렬된 영역과 정렬되지 않은 영역을 나누고 가장 큰 요소를 추출하여 정렬된 영역으로 이동시킨다.
+-   선택 정렬보다 개선된 점은 선형 시간이 소요되는 선택정렬의 탐색과 달리 힙 데이터 구조를 사용하여 최대값을 찾는 점이다.
+-   속도가 빠르고 최악의 경우에도 O(N \* logN)의 시간복잡도를 보장하며 추가적인 메모리를 필요로 하지 않는다.
+-   단, 안정성을 보장받지 못하ㅇ며 데이터의 상태에 때라 다은 정렬법보다 느릴 수 있다.
+-   Best Case: O(N \* logN)
+-   Worst Case: O(N \* logN)
+
+ex)
+
+```js
+const swap = (input, i, j) => ([input[j], input[i]] = [input[i], input[j]]);
+
+const heapRoot = (input, i, arrLen) => {
+	let left = 2 * i + 1;
+	let right = 2 * i + 2;
+	let max = i;
+
+	if (left < arrLen && input[left] > input[max]) max = left;
+	if (right < arrLen && input[right] > input[max]) max = right;
+
+	if (max != i) {
+		swap(input, i, max);
+		heapRoot(input, max, arrLen);
+	}
+};
+
+const heapSort = (input) => {
+	let arrLen = input.length;
+
+	for (let i = Math.floor(arrLen / 2); i >= 0; i--) heapRoot(input, i, arrLen);
+
+	for (let i = input.length - 1; i > 0; i--) {
+		swap(input, 0, i);
+		arrLen--;
+		heapRoot(input, 0, arrLen);
+	}
+};
+```
