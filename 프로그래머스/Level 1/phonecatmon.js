@@ -4,3 +4,7 @@ const solution = (nums) => {
 
 	return uniqueMon.length <= maxSelect ? uniqueMon.length : maxSelect;
 };
+
+const n1 = [3, 1, 2, 3];
+
+console.log(solution(n1));

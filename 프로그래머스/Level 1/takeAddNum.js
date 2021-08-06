@@ -12,3 +12,4 @@ const solution = (nums) => {
 
 const n1 = [2, 1, 3, 4, 1];
 console.log(solution(n1));
+co;
