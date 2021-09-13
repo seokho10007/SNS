@@ -1,26 +1,21 @@
 function solution(enter, leave) {
-	var answer = Array(enter.length).fill(0);
+	const answer = Array(enter.length).fill(0);
 
 	const info = {};
 	enter.forEach((v) => (info[v] = []));
 
-	const stack = [];
-	stack.push(enter.shift());
+	const stack = new Set();
 
-	while (stack.length) {
-		if (stack[0] === leave[0]) {
-			const n = stack.shift();
-			leave.shift();
+	for (let i = 0, j = 0; i < enter.length; i++) {
+		stack.add(enter[i]);
 
-			if (stack.length) info[n].push(...stack);
-		} else if (stack[stack.length - 1] === leave[0]) {
-			const n = stack.pop();
-			leave.shift();
+		while (stack.has(leave[j])) {
+			const n = leave[j];
+			stack.delete(leave[j]);
 
-			if (stack.length) info[n].push(...stack);
-		} else if (enter.length) stack.push(enter.shift());
-
-		if (!stack.length && enter.length) stack.push(enter.shift());
+			info[n].push(...stack);
+			j++;
+		}
 	}
 
 	for (const n in info) {
