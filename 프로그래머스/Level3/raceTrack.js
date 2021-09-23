@@ -1,47 +1,43 @@
-const solution = (board) => {
+function solution(board) {
+	// 아래 위 우 좌
+	const dx = [0, 0, 1, -1];
+	const dy = [1, -1, 0, 0];
+
 	const n = board.length;
-	const Q = [[0, 0, '', 0]];
-	const directionAdds = [0, 1, 3];
+	let answer = n * n * 600;
 
-	const checkPush = ([x, y]) => {
-		return x >= 0 && x < n && y >= 0 && y < n && !(x === 0 && y === 0) && board[y][x] !== 1;
-	};
+	const dp = Array.from({ length: n }, () => Array(n).fill(Infinity));
 
-	while (Q.length) {
-		let [x, y, direction, price] = Q[0];
-		console.log([x, y, direction, price]);
+	// x, y, 값, 코너, 방향
+	const q = [[0, 0, 0, 0]];
+	dp[0][0] = 0;
 
-		if (board[y][x] >= price || board[y][x] === 0) {
-			board[y][x] = price;
-			directionAdds.forEach((n) => {
-				let D = (direction + n) % 4;
-				let a = D === 0 ? x + 1 : D === 2 ? x - 1 : x;
-				let b = D === 1 ? y + 1 : D === 3 ? y - 1 : y;
-				if (checkPush([a, b])) {
-					Q.push([a, b, D, n === 0 || direction === '' ? price + 100 : price + 600]);
-				}
-			});
+	while (q.length) {
+		const [x, y, cost, loc] = q.shift();
+
+		// 목표지점 도착했을 때
+		if (x === n - 1 && y === n - 1) {
+			// 도착한 값이 저장된 값보다 작다면 저장
+			if (answer > cost) answer = cost;
+			continue;
 		}
-		Q.shift();
+
+		for (let i = 0; i < 4; i++) {
+			const [nx, ny] = [x + dx[i], y + dy[i]];
+
+			if (checkDist(nx, ny, n) && !board[nx][ny]) {
+				const sum = x === 0 && y === 0 ? cost + 100 : loc === i ? cost + 100 : cost + 600;
+
+				if (dp[nx][ny] >= sum) {
+					dp[nx][ny] = sum;
+					q.push([nx, ny, sum, i]);
+				}
+			}
+		}
+		q.sort((a, b) => a[3] - b[3]);
 	}
-	return board[n - 1][n - 1];
-};
-const b1 = [
-	[0, 0, 1, 0],
-	[0, 0, 0, 0],
-	[0, 1, 0, 1],
-	[1, 0, 0, 0],
-];
 
-const b2 = [
-	[0, 0, 0, 0, 0, 0, 0, 1],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 1, 0, 0],
-	[0, 0, 0, 0, 1, 0, 0, 0],
-	[0, 0, 0, 1, 0, 0, 0, 1],
-	[0, 0, 1, 0, 0, 0, 1, 0],
-	[0, 1, 0, 0, 0, 1, 0, 0],
-	[1, 0, 0, 0, 0, 0, 0, 0],
-];
+	return answer;
+}
 
-console.log(solution(b1));
+const checkDist = (x, y, n) => x >= 0 && x < n && y >= 0 && y < n;
