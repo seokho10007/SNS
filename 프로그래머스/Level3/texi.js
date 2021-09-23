@@ -26,3 +26,4 @@ const checkConnectInfo = (fares, n) => {
 
 	return dist;
 };
+
