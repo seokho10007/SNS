@@ -9,7 +9,7 @@ function merge(left, right) {
 
 	const sortedArr = [];
 	while (left.length > l && right.length > r) {
-		if (left[l] <= right[r]) {
+		if (left[l] >= right[r]) {
 			sortedArr.push(left[l++]);
 		} else {
 			sortedArr.push(right[r++]);
@@ -35,7 +35,7 @@ function mergeSort(arr) {
 }
 
 function solution(nums) {
-	return mergeSort(nums);
+	return mergeSort(nums).join('');
 }
 
 console.log(solution(nums));
