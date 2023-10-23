@@ -1,8 +1,10 @@
 const filePath = process.platform === "linux" ? "/dev/stdin" : "../input.txt";
 const input = require("fs").readFileSync(filePath).toString().trim().split("\n");
 
-const set = new Set();
+const N = input.length;
 
-input.forEach((n) => set.add(Number(n) % 42));
+for (let i = 0; i < N; i++) {
+	const [a, b] = input[i].split(" ").map(Number);
 
-console.log(set.size);
+	console.log(a + b);
+}
