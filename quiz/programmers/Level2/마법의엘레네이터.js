@@ -1,45 +1,43 @@
 function solution(storey) {
-	var answer = 0;
+	var answer = Number.MAX_VALUE;
 
-	const numbers = [];
+	const q = [];
 
-	let count = 0;
-
-	while (true) {
-		const num = storey % 10 ** count;
-
-		if (num === storey) break;
-
-		numbers.push(10 ** count);
-		count += 1;
-	}
-
-	const q = [[storey, 0]];
+	// [층수, 사용한 마법의 돌 개수]
+	q.push([storey, 0]);
 
 	while (q.length) {
-		const [num, count] = q.shift();
+		let [s, c] = q.shift();
 
-		if (num === 0) {
-			answer = count;
-			break;
+		let r = s % 10;
+
+		if (s < 10) {
+			answer = Math.min(answer, s + c);
+			answer = Math.min(answer, c + 10 - s + 1);
+			continue;
 		}
 
-		for (let i = 0; i < numbers.length; i++) {
-			const n = numbers[i];
-			if (num < 0) {
-				const nn = Math.abs(num);
-
-				if (n > nn) continue;
-
-				q.push([num + n, count + 1]);
-			} else {
-				const nn = num - n;
-				q.push([nn, count + 1]);
-			}
+		if (r === 0) {
+			q.push([s / 10, c]);
+			continue;
 		}
+
+		q.push([s - r, c + r]);
+		q.push([s + 10 - r, c + 10 - r]);
 	}
 
 	return answer;
 }
 
-console.log(solution(2554));
+const testCase = [16, 2554, 9000, 500];
+const success = [6, 16, 2, 5];
+
+testCase.forEach((c, i) => {
+	// if (i !== 2) return;
+
+	const result = solution(c);
+
+	console.log(`${i + 1}-case:`);
+
+	console.log(result, success[i], result === success[i]);
+});
