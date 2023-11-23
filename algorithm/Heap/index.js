@@ -1,82 +1,178 @@
-class MinHeap {
+class Heap {
   constructor() {
     this.heap = [];
   }
 
-  size() {
+  get size() {
     return this.heap.length;
+  }
+
+  get peek() {
+    this.heap[0];
+  }
+
+  getLeftChildIndex(parentIndex) {
+    return parentIndex * 2 + 1;
+  }
+
+  getRightChildIndex(parentIndex) {
+    return parentIndex * 2 + 2;
+  }
+
+  getParentIndex(childIndex) {
+    return Math.floor((childIndex - 1) / 2);
   }
 
   swap(idx1, idx2) {
     [this.heap[idx1], this.heap[idx2]] = [this.heap[idx2], this.heap[idx1]];
   }
+}
 
-  add(value) {
-    // 힙의 마지막 위치에 요소를 추가
-    this.heap.push(value);
-    this.bubbleUp();
+class MinHeap extends Heap {
+  constructor() {
+    super();
   }
 
-  poll() {
-    if (this.heap.length === 1) {
+  insert(value) {
+    this.heap.push(value);
+    this.#bubbleUp();
+  }
+
+  remove() {
+    if (this.size === 1) {
       return this.heap.pop();
     }
 
-    // 힙의 가장 작은 노드를 재가
-    const value = this.heap[0];
-
-    // 가장 마지막에 있는 노드를 루트로 저장
+    const del = this.heap[0];
     this.heap[0] = this.heap.pop();
+    this.#bubbleDown();
 
-    //
-    this.bubbleDown();
-
-    return value;
+    return del;
   }
 
-  bubbleUp() {
-    let index = this.heap.length - 1;
-    let parentIdx = Math.floor((index - 1) / 2);
+  #bubbleUp() {
+    let currentIdx = this.size - 1;
+    let parentIndex = this.getParentIndex(currentIdx);
 
-    // 부모노드와 새로 추가된 노드의 값을 비교
-    // 만약 새로 추가된 노드의 값이 부모노드의 값보다 작다면
-    while (this.heap[parentIdx] && this.heap[index][1] < this.heap[parentIdx][1]) {
-      // 교환
-      this.swap(index, parentIdx);
-      index = parentIdx;
-      parentIdx = Math.floor((index - 1) / 2);
+    while (this.heap[parentIndex] && this.heap[parentIndex] > this.heap[currentIdx]) {
+      this.swap(parentIndex, currentIdx);
+      currentIdx = parentIndex;
+      parentIndex = this.getParentIndex(currentIdx);
     }
   }
 
-  bubbleDown() {
-    let index = 0;
-    let leftIdx = index * 2 + 1;
-    let rightIdx = index * 2 + 2;
+  #bubbleDown() {
+    let currentIdx = 0;
+
+    let leftIdx = this.getLeftChildIndex(currentIdx);
+    let rightIdx = this.getRightChildIndex(currentIdx);
+
+    const MAX = Number.MAX_SAFE_INTEGER;
 
     while (
-      (this.heap[leftIdx] && this.heap[leftIdx][1] < this.heap[index][1]) ||
-      (this.heap[rightIdx] && this.heap[rightIdx][1] < this.heap[index][1])
+      (this.heap[leftIdx] && this.heap[leftIdx] < this.heap[currentIdx]) ||
+      (this.heap[rightIdx] && this.heap[rightIdx] < this.heap[currentIdx])
     ) {
-      let smallerIdx = leftIdx;
-      if (this.heap[rightIdx] && this.heap[rightIdx][1] < this.heap[smallerIdx][1]) {
-        smallerIdx = rightIdx;
-      }
+      let nextIdx = (this.heap[leftIdx] ?? MAX) > (this.heap[rightIdx] ?? MAX) ? rightIdx : leftIdx;
 
-      this.swap(index, smallerIdx);
-
-      index = smallerIdx;
-      leftIdx = index * 2 + 1;
-      rightIdx = index * 2 + 2;
+      this.swap(currentIdx, nextIdx);
+      currentIdx = nextIdx;
+      leftIdx = this.getLeftChildIndex(currentIdx);
+      rightIdx = this.getRightChildIndex(currentIdx);
     }
   }
 }
 
-const heap = new MinHeap();
+class MaxHeap extends Heap {
+  constructor() {
+    super();
+  }
 
-heap.add([3, 5]);
-heap.add([2, 4]);
-heap.add([3, 5]);
-heap.add([5, 1]);
-heap.add([3, 2]);
+  insert(value) {
+    this.heap.push(value);
+    this.#bubbleUp();
+  }
 
-console.log(heap);
+  remove() {
+    if (this.size === 1) {
+      return this.heap.pop();
+    }
+
+    const del = this.heap[0];
+    this.heap[0] = this.heap.pop();
+    this.#bubbleDown();
+
+    return del;
+  }
+
+  #bubbleUp() {
+    let currentIdx = this.size - 1;
+    let parentIndex = this.getParentIndex(currentIdx);
+
+    while (this.heap[parentIndex] && this.heap[parentIndex] < this.heap[currentIdx]) {
+      this.swap(parentIndex, currentIdx);
+      currentIdx = parentIndex;
+      parentIndex = this.getParentIndex(currentIdx);
+    }
+  }
+
+  #bubbleDown() {
+    let currentIdx = 0;
+
+    let leftIdx = this.getLeftChildIndex(currentIdx);
+    let rightIdx = this.getRightChildIndex(currentIdx);
+
+    const MAX = Number.MAX_SAFE_INTEGER;
+
+    while (
+      (this.heap[leftIdx] && this.heap[leftIdx] > this.heap[currentIdx]) ||
+      (this.heap[rightIdx] && this.heap[rightIdx] > this.heap[currentIdx])
+    ) {
+      let nextIdx = (this.heap[leftIdx] ?? MAX) < (this.heap[rightIdx] ?? MAX) ? rightIdx : leftIdx;
+
+      this.swap(currentIdx, nextIdx);
+      currentIdx = nextIdx;
+      leftIdx = this.getLeftChildIndex(currentIdx);
+      rightIdx = this.getRightChildIndex(currentIdx);
+    }
+
+    console.log(this.heap);
+  }
+}
+
+const minHeap = new MinHeap();
+
+console.log("MIN HEAP");
+
+minHeap.insert(5);
+minHeap.insert(6);
+minHeap.insert(2);
+minHeap.insert(4);
+minHeap.insert(1);
+
+console.log(minHeap.heap);
+
+minHeap.remove();
+minHeap.remove();
+
+console.log(minHeap.heap);
+
+console.log("MAX HEAP");
+
+const maxHeap = new MaxHeap();
+
+maxHeap.insert(1);
+maxHeap.insert(5);
+maxHeap.insert(1);
+maxHeap.insert(3);
+maxHeap.insert(2);
+maxHeap.insert(1);
+maxHeap.insert(38);
+
+console.log(maxHeap.heap);
+
+maxHeap.remove();
+maxHeap.remove();
+maxHeap.remove();
+
+console.log(maxHeap.heap);
